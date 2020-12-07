@@ -6,6 +6,20 @@ const Player = db.player;
 const Genre = db.genre;
 const Op = db.Sequelize.Op;
 
+exports.findAll = (req, res) => {
+
+  Game.findAll()
+    .then(data => {
+      res.send(data);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving tutorials."
+      });
+    });
+};
+
 
 exports.getRecommendation = (req, res) => {
   const id = req.query.accountID;
@@ -22,7 +36,7 @@ exports.getRecommendation = (req, res) => {
             WHERE Plays.accountID= :id
         )
   `, 
-  { raw: true, replacements: {id: id} })
+  { type: QueryTypes.SELECT, replacements: {id: id} })
   .then(data => {
     res.send(data);
   })
