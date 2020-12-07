@@ -24,14 +24,10 @@ app.get("/", (req, res) => {
 const db = require("./app/models");
 db.sequelize.sync();
 
-const recommendations = require("./app/controller/recommendation.controller.js");
-
-app.get("api/recommendations", recommendations.findAll);
-// Get recommendations for accountID
-app.get("api/recommendations/:id", recommendations.getRecommendation);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
+require('./app/routes/recommendation.routes')(app, {});
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });

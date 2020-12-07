@@ -5,7 +5,7 @@ module.exports = app => {
 
     router.get("/", recommendations.findAll);
     // Get recommendations for accountID
-    router.get("/:id", recommendations.getRecommendation);
+    router.get("/:accountID?", recommendations.getRecommendation);
   
     app.use('/api/recommendations', router);
   };

@@ -8,7 +8,8 @@ const Op = db.Sequelize.Op;
 
 exports.findAll = (req, res) => {
 
-  Game.findAll()
+  db.sequelize.query("SELECT title FROM Games", 
+  { type: QueryTypes.SELECT})
     .then(data => {
       res.send(data);
     })
@@ -22,11 +23,11 @@ exports.findAll = (req, res) => {
 
 
 exports.getRecommendation = (req, res) => {
-  const id = req.query.accountID;
+  const accountID = req.params.accountID;
   db.sequelize.query(`
-    SELECT title
+    SELECT distinct title
     FROM Games as g, Plays as ps, Player as p, Genre as ge
-    WHERE (SELECT distinct genre FROM genre WHERE Genre.gameID=g.gameID) IN
+    WHERE (SELECT distinct genre FROM Genre WHERE Genre.gameID=g.gameID) IN
         (SELECT distinct genre FROM Plays, Genre
             WHERE Plays.accountID= :id
             AND Plays.gameID=Genre.gameID)
@@ -34,9 +35,9 @@ exports.getRecommendation = (req, res) => {
             SELECT distinct gameID
             FROM Plays
             WHERE Plays.accountID= :id
-        )
+        );
   `, 
-  { type: QueryTypes.SELECT, replacements: {id: id} })
+  { type: QueryTypes.SELECT, replacements: {id: accountID} })
   .then(data => {
     res.send(data);
   })
